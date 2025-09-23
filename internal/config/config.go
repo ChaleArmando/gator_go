@@ -12,7 +12,7 @@ type Config struct {
 	CurrentUserName string `json:"current_user_name"`
 }
 
-const configFileName = "workspace/github.com/ChaleArmando/gator_go/.gatorconfig.json"
+const configFileName = ".gatorconfig.json"
 
 func Read() Config {
 	var conf Config
