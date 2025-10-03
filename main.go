@@ -10,6 +10,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type state struct {
+	conf      *config.Config
+	dbQueries *database.Queries
+}
+
 func main() {
 	conf := config.Read()
 
