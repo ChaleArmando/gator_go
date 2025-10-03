@@ -15,3 +15,7 @@ WHERE name = $1;
 
 -- name: ResetUsers :exec
 TRUNCATE TABLE users;
+
+-- name: GetUsers :many
+SELECT *
+FROM users;
