@@ -40,6 +40,7 @@ func main() {
 	gatorCommands.register("register", handlerRegister)
 	gatorCommands.register("reset", handlerReset)
 	gatorCommands.register("users", handlerUsers)
+	gatorCommands.register("agg", handlerAgg)
 
 	args := os.Args
 	if len(args) < 2 {
