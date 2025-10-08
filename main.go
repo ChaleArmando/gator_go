@@ -42,6 +42,7 @@ func main() {
 	gatorCommands.register("users", handlerUsers)
 	gatorCommands.register("agg", handlerAgg)
 	gatorCommands.register("addfeed", handlerAddFeed)
+	gatorCommands.register("feeds", handlerFeeds)
 
 	args := os.Args
 	if len(args) < 2 {
@@ -57,5 +58,5 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println(config.Read())
+	//fmt.Println(config.Read())
 }

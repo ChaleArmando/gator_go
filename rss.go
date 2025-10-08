@@ -3,15 +3,10 @@ package main
 import (
 	"context"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"html"
 	"io"
 	"net/http"
-	"time"
-
-	"github.com/ChaleArmando/gator_go/internal/database"
-	"github.com/google/uuid"
 )
 
 type RSSFeed struct {
@@ -73,38 +68,4 @@ func handlerAgg(s *state, cmd command) error {
 	}
 	fmt.Println(rss)
 	return nil
-}
-
-func handlerAddFeed(s *state, cmd command) error {
-	if len(cmd.args) != 2 {
-		return errors.New("login expect arguments: feed name and feed url")
-	}
-
-	user, err := s.dbQueries.GetUser(context.Background(), s.conf.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
-	}
-
-	dbArgs := database.CreateFeedParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Name:      cmd.args[0],
-		Url:       cmd.args[1],
-		UserID:    user.ID,
-	}
-	feed, err := s.dbQueries.CreateFeed(context.Background(), dbArgs)
-	if err != nil {
-		return fmt.Errorf("create user failed: %w", err)
-	}
-
-	printFeed(feed)
-	return nil
-}
-
-func printFeed(i database.Feed) {
-	fmt.Printf("ID: %v\n", i.ID)
-	fmt.Printf("Name: %v\n", i.Name)
-	fmt.Printf("URL: %v\n", i.Url)
-	fmt.Printf("User ID: %v\n", i.UserID)
 }
