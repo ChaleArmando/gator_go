@@ -43,6 +43,8 @@ func main() {
 	gatorCommands.register("agg", handlerAgg)
 	gatorCommands.register("addfeed", handlerAddFeed)
 	gatorCommands.register("feeds", handlerFeeds)
+	gatorCommands.register("follow", handlerFollow)
+	gatorCommands.register("following", handlerFollowing)
 
 	args := os.Args
 	if len(args) < 2 {
