@@ -41,9 +41,9 @@ func main() {
 	gatorCommands.register("reset", handlerReset)
 	gatorCommands.register("users", handlerUsers)
 	gatorCommands.register("agg", handlerAgg)
-	gatorCommands.register("addfeed", handlerAddFeed)
+	gatorCommands.register("addfeed", middlewareLoggedIn(handlerAddFeed))
 	gatorCommands.register("feeds", handlerFeeds)
-	gatorCommands.register("follow", handlerFollow)
+	gatorCommands.register("follow", middlewareLoggedIn(handlerFollow))
 	gatorCommands.register("following", handlerFollowing)
 
 	args := os.Args

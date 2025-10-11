@@ -10,14 +10,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 2 {
 		return errors.New("login expect arguments: feed name and feed url")
-	}
-
-	user, err := s.dbQueries.GetUser(context.Background(), s.conf.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
 	}
 
 	dbArgs := database.CreateFeedParams{
