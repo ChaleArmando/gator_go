@@ -3,10 +3,14 @@ package main
 import (
 	"context"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"html"
 	"io"
 	"net/http"
+	"time"
+
+	"github.com/ChaleArmando/gator_go/internal/database"
 )
 
 type RSSFeed struct {
@@ -62,10 +66,49 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 }
 
 func handlerAgg(s *state, cmd command) error {
-	rss, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
-	if err != nil {
-		return err
+	if len(cmd.args) != 1 {
+		return errors.New("login expect argument: time between requests")
 	}
-	fmt.Println(rss)
+
+	timeBetweenReqs, err := time.ParseDuration(cmd.args[0])
+	if err != nil {
+		return fmt.Errorf("couldn't use argument for time requests: %w", err)
+	}
+	fmt.Printf("Collecting feeds every %v\n", timeBetweenReqs)
+
+	ticker := time.NewTicker(timeBetweenReqs)
+	for ; ; <-ticker.C {
+		err = scrapeFeeds(s)
+		if err != nil {
+			return err
+		}
+	}
+}
+
+func scrapeFeeds(s *state) error {
+	feed, err := s.dbQueries.GetNextFeedToFetch(context.Background())
+	if err != nil {
+		return fmt.Errorf("failed to get feed: %w", err)
+	}
+
+	rss, err := fetchFeed(context.Background(), feed.Url)
+	if err != nil {
+		return fmt.Errorf("failed to fetch feed: %w", err)
+	}
+
+	dbArgs := database.MarkFeedFetchedParams{
+		ID:        feed.ID,
+		UpdatedAt: time.Now(),
+	}
+	err = s.dbQueries.MarkFeedFetched(context.Background(), dbArgs)
+	if err != nil {
+		return fmt.Errorf("failed to mark fetched feed: %w", err)
+	}
+
+	fmt.Printf("Feed: %s\n", feed.Name)
+	for _, rssItem := range rss.Channel.Item {
+		fmt.Println(rssItem.Title)
+	}
+	fmt.Println()
 	return nil
 }
