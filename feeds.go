@@ -12,7 +12,7 @@ import (
 
 func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 2 {
-		return errors.New("login expect arguments: feed name and feed url")
+		return errors.New("addfeed expect arguments: feed name and feed url")
 	}
 
 	dbArgs := database.CreateFeedParams{

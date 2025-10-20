@@ -7,10 +7,13 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/ChaleArmando/gator_go/internal/database"
+	"github.com/google/uuid"
 )
 
 type RSSFeed struct {
@@ -105,10 +108,25 @@ func scrapeFeeds(s *state) error {
 		return fmt.Errorf("failed to mark fetched feed: %w", err)
 	}
 
-	fmt.Printf("Feed: %s\n", feed.Name)
 	for _, rssItem := range rss.Channel.Item {
-		fmt.Println(rssItem.Title)
+
+		dbPostArgs := database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			Title:       rssItem.Title,
+			Url:         rssItem.Link,
+			Description: database.StringNull(rssItem.Description),
+			FeedID:      feed.ID,
+			PublishedAt: database.TimeNull(rssItem.PubDate),
+		}
+		_, err = s.dbQueries.CreatePost(context.Background(), dbPostArgs)
+		if err != nil {
+			if !strings.Contains(err.Error(), "unique constraint \"posts_url_key\"") {
+				log.Println(err)
+			}
+		}
+
 	}
-	fmt.Println()
 	return nil
 }

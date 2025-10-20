@@ -46,6 +46,7 @@ func main() {
 	gatorCommands.register("follow", middlewareLoggedIn(handlerFollow))
 	gatorCommands.register("following", handlerFollowing)
 	gatorCommands.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	gatorCommands.register("browse", handlerBrowse)
 
 	args := os.Args
 	if len(args) < 2 {
