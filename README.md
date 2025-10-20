@@ -24,6 +24,7 @@ Gator require PostgreSQL, Go and Goose.
 To develop more functionalities with the database it will also be necessary SQLC command line tool
 
 [PostgreSQL](https://www.postgresql.org/download/) - Download and install
+
 [Golang download doc](https://go.dev/doc/install) - Download files and follow instructions
 
 Download or clone repository
